@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<meta charset="UTF-8">
+	<title>Canvas</title>
+	<style type="text/css">
+		html, body{ 
+			width:100%; 
+			height:100%;
+			justify-content: center;
+			align-items: center;
+			margin: 0;
+		}
+		canvas{
+			border: 1px solid black;
+			margin-left: 10%;
+		}
+	</style>
+</head>
+
+<body>
+	<canvas id="canvas" width="500" height="500"></canvas>
+	<input type="color" value="#ff0000" id="colorWell" onchange="">
+	<script>
+		var c = document.getElementById("canvas");
+		var ctx = c.getContext("2d");
+		
+		window.addEventListener('resize', resizeCanvas);
+		function resizeCanvas() {
+			c.width = window.innerWidth * .8;
+			c.height = window.innerHeight * .8;
+			drawStuff(); 
+		}
+		resizeCanvas();
+		function drawStuff() {
+			var colorWell = document.getElementById('colorWell');
+			var x = 0;
+			var y = 0;
+			var color = colorWell.value;
+			var radius = 20;
+			function draw(){
+				ctx.beginPath();
+				ctx.fillStyle = color;
+				ctx.arc(x, y, radius, 0, 2 * Math.PI);
+				ctx.fill();
+			}
+			window.addEventListener('mousemove', function(e){
+				const rect = c.getBoundingClientRect();
+				console.log(rect);
+				x=e.pageX - rect.left;
+				y=e.pageY - rect.top;
+				console.log(x);
+				console.log(y);
+				draw();
+			})
+			window.addEventListener('touchmove', function(e){
+				const rect = c.getBoundingClientRect();
+				console.log(rect);
+				x=e.pageX - rect.left;
+				y=e.pageY - rect.top;
+				console.log(x);
+				console.log(y);
+				draw();
+			})			
+			colorWell.addEventListener('change', function(e) {
+				color = e.target.value;
+			});
+			window.addEventListener('keyup', function(e){
+				console.log(e.key);
+				if(e.key == "b"){
+					color = "blue";
+				} else if (e.key == "g") {
+					color = "green";
+				} else if (e.key == "y") {
+					color = "yellow";
+				} else if (e.key == "r") {
+					color = "red";
+				} else if (e.key == " "){
+					ctx.clearRect(0, 0, canvas.width, canvas.height);
+				} else if (e.key == "ArrowUp"){
+					radius += .5;
+				} else if (e.key == "ArrowDown"){
+					if(radius == .5){
+						console.log("You can't go below 0");
+					} else {
+						radius -= .5;
+					}
+				}
+			})
+			function orientation(){
+				if (Math.abs(window.orientation) === 90) {
+        		// Landscape
+        			ctx.clearRect(0, 0, canvas.width, canvas.height);
+        		} else {
+    				console.log("nothing")
+    		}
+    	}
+    	window.onorientationchange = orientation;
+    }
+</script>
+</body>
+
+</html>
